@@ -1,4 +1,7 @@
-cordova-plugins
-===============
+# Cordova Plugins
 
-Useful plugins for Cordova
+A collection of useful plugins for Apache Cordova.
+
+## Plugins
+
+* [activity](activity) - Activity indicator for iOS.
