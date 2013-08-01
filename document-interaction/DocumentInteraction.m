@@ -61,9 +61,9 @@
 #pragma mark - Private Methods
 
 - (NSString *) detectFileUTI:(NSString *)filePath {
+#if __has_feature(objc_arc)
     CFStringRef pathExtension = (__bridge_retained CFStringRef) [filePath pathExtension];
     CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, NULL);
-
     CFRelease(pathExtension);
 
     if (type == NULL) {
@@ -71,9 +71,20 @@
     }
 
     return CFBridgingRelease(type);
+#else
+    CFStringRef pathExtension = (CFStringRef) [filePath pathExtension];
+    CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension, NULL);
+
+    if (type == NULL) {
+        return (NSString *) CFRetain(kUTTypeContent);
+    }
+
+    return CFBridgingRelease(type);
+#endif
 }
 
 - (NSString *) convertMimeToUTI:(NSString *)mime {
+#if __has_feature(objc_arc)
     CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (__bridge CFStringRef)(mime), NULL);
 
     if (type == NULL) {
@@ -81,9 +92,15 @@
     }
 
     return CFBridgingRelease(type);
+#else
+    CFStringRef type = UTTypeCreatePreferredIdentifierForTag(kUTTagClassMIMEType, (CFStringRef)(mime), NULL);
+
+    if (type == NULL) {
+        return (NSString *) CFRetain(kUTTypeContent);
+    }
+
+    return CFBridgingRelease(type);
+#endif
 }
-
-
-
 
 @end
